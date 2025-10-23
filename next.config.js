@@ -7,9 +7,6 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   swcMinify: false,
-  experimental: {
-    esmExternals: false,
-  },
 }
 
 module.exports = nextConfig
