@@ -16,7 +16,7 @@
       chatButton.style.cssText = `
         position: fixed !important;
         bottom: 20px !important;
-        right: 150px !important;
+        right: 200px !important;
         width: 70px !important;
         height: 70px !important;
         background: linear-gradient(135deg, #2E7D32, #66BB6A) !important;
@@ -31,7 +31,7 @@
         border: 3px solid rgba(255, 255, 255, 0.2) !important;
       `;
 
-      // Crear imagen con tu logo SVG (con fallback)
+      // Crear imagen con tu logo SVG (con debugging)
       const logoImg = document.createElement('img');
       logoImg.src = `${CHAT_APP_URL}/chat-icon.svg`;
       logoImg.alt = 'Selva Chat';
@@ -42,8 +42,14 @@
         pointer-events: none !important;
       `;
       
-      // Fallback si no carga la imagen - con tu logo como texto
+      // Debug: ver si carga la imagen
+      logoImg.onload = function() {
+        console.log('✅ SVG cargado correctamente:', this.src);
+      };
+      
+      // Fallback si no carga la imagen
       logoImg.onerror = function() {
+        console.log('❌ Error cargando SVG:', this.src);
         this.style.display = 'none';
         chatButton.innerHTML = `
           <div style="color: white; font-weight: bold; font-size: 10px; text-align: center; line-height: 1.2;">
