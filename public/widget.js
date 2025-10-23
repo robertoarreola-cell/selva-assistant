@@ -16,7 +16,7 @@
       chatButton.style.cssText = `
         position: fixed !important;
         bottom: 20px !important;
-        right: 100px !important;
+        right: 150px !important;
         width: 70px !important;
         height: 70px !important;
         background: linear-gradient(135deg, #2E7D32, #66BB6A) !important;
@@ -42,10 +42,14 @@
         pointer-events: none !important;
       `;
       
-      // Fallback si no carga la imagen
+      // Fallback si no carga la imagen - con tu logo como texto
       logoImg.onerror = function() {
         this.style.display = 'none';
-        chatButton.innerHTML = '<div style="color: white; font-weight: bold; font-size: 12px;">CHAT</div>';
+        chatButton.innerHTML = `
+          <div style="color: white; font-weight: bold; font-size: 10px; text-align: center; line-height: 1.2;">
+            🌿<br>SELVA
+          </div>
+        `;
       };
       
       chatButton.appendChild(logoImg);
@@ -66,13 +70,13 @@
           chatIframe.style.cssText = `
             position: fixed !important;
             bottom: 100px !important;
-            right: 100px !important;
-            width: 360px !important;
-            height: 600px !important;
+            right: 20px !important;
+            width: 380px !important;
+            height: 650px !important;
             border: none !important;
             border-radius: 12px !important;
-            box-shadow: 0 12px 40px rgba(0,0,0,0.25) !important;
-            z-index: 999998 !important;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.35) !important;
+            z-index: 1000000 !important;
             display: block !important;
             background: white !important;
           `;
