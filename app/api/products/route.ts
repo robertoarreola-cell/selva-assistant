@@ -1,6 +1,39 @@
 // app/api/products/route.ts
 import { NextRequest, NextResponse } from "next/server";
 
+// Interfaces para tipos
+interface ProductVariant {
+  id: string;
+  price: string;
+  inventoryQuantity: number;
+  availableForSale: boolean;
+}
+
+interface ProductImage {
+  url: string;
+}
+
+interface ProductMetafield {
+  namespace: string;
+  key: string;
+  value: string;
+  type: string;
+}
+
+interface ShopifyProduct {
+  id: string;
+  title: string;
+  handle: string;
+  descriptionHtml: string;
+  status: string;
+  tags: string[];
+  productType: string;
+  vendor: string;
+  images: { edges: { node: ProductImage }[] };
+  variants: { edges: { node: ProductVariant }[] };
+  metafields: { edges: { node: ProductMetafield }[] };
+}
+
 const ADMIN_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN;
 const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN;
 if (!ADMIN_DOMAIN) throw new Error("Missing env SHOPIFY_STORE_DOMAIN");
@@ -89,7 +122,7 @@ export async function GET(req: NextRequest) {
     }
 
     // Procesar la respuesta GraphQL
-    const products = data.data.products.edges.flatMap((productEdge: any) => {
+    const products = data.data.products.edges.flatMap((productEdge: { node: ShopifyProduct }) => {
       const product = productEdge.node;
       
       // Solo procesar productos activos (doble verificación)
@@ -98,14 +131,14 @@ export async function GET(req: NextRequest) {
       }
 
       // Extraer metafields
-      const metafields = product.metafields.edges.map((metafieldEdge: any) => ({
+      const metafields = product.metafields.edges.map((metafieldEdge: { node: ProductMetafield }) => ({
         namespace: metafieldEdge.node.namespace,
         key: metafieldEdge.node.key,
         value: metafieldEdge.node.value,
         type: metafieldEdge.node.type,
       }));
 
-      // Buscar FAQs en metafields - formato: custom.faq_question_1 + custom.faq_answer_1, etc.
+      // Buscar FAQs en metafields
       let faqs = null;
       const faqMetafields = metafields.filter(
         (m) => m.namespace === "custom" && (m.key.startsWith("faq_question_") || m.key.startsWith("faq_answer_"))
@@ -114,12 +147,10 @@ export async function GET(req: NextRequest) {
       if (faqMetafields.length > 0) {
         const faqsArray = [];
         
-        // Procesar FAQs del 1 al 6
         for (let i = 1; i <= 6; i++) {
           const question = faqMetafields.find(m => m.key === `faq_question_${i}`)?.value;
           const answer = faqMetafields.find(m => m.key === `faq_answer_${i}`)?.value;
           
-          // Solo agregar si tanto pregunta como respuesta existen y no están vacías
           if (question && answer && question.trim() && answer.trim()) {
             faqsArray.push({
               question: question.trim(),
@@ -128,7 +159,6 @@ export async function GET(req: NextRequest) {
           }
         }
         
-        // Solo asignar si hay al menos una FAQ completa
         if (faqsArray.length > 0) {
           faqs = faqsArray;
         }
@@ -137,7 +167,7 @@ export async function GET(req: NextRequest) {
       // Si no hay variantes, crear entrada base
       if (!product.variants.edges || product.variants.edges.length === 0) {
         return [{
-          id: product.id,
+          id: parseInt(product.id.replace("gid://shopify/Product/", "")) || 0,
           title: product.title,
           url: `${STOREFRONT_BASE}/products/${product.handle}`,
           price: "0.00",
@@ -155,7 +185,7 @@ export async function GET(req: NextRequest) {
       }
 
       // Crear una entrada por cada variante
-      return product.variants.edges.map((variantEdge: any) => {
+      return product.variants.edges.map((variantEdge: { node: ProductVariant }) => {
         const variant = variantEdge.node;
         return {
           id: parseInt(variant.id.replace("gid://shopify/ProductVariant/", "")) || 0,
@@ -178,7 +208,7 @@ export async function GET(req: NextRequest) {
 
     // Filtrar por stock si se solicita
     const filteredProducts = inStockOnly
-      ? products.filter((p: any) => p.available && p.inventory_quantity > 0)
+      ? products.filter((p) => p.available && p.inventory_quantity > 0)
       : products;
 
     return NextResponse.json(filteredProducts);
