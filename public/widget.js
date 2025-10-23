@@ -8,7 +8,7 @@
   chatButton.style.cssText = `
     position: fixed;
     bottom: 20px;
-    right: 20px;
+    right: 100px;
     width: 70px;
     height: 70px;
     background: linear-gradient(135deg, #2E7D32, #66BB6A);
@@ -42,7 +42,7 @@
   chatIframe.style.cssText = `
     position: fixed;
     bottom: 100px;
-    right: 20px;
+    right: 100px;
     width: 360px;
     height: 600px;
     border: none;
