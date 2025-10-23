@@ -1,0 +1,146 @@
+// app/api/products/route.ts
+import { NextRequest, NextResponse } from "next/server";
+
+const ADMIN_DOMAIN = process.env.SHOPIFY_STORE_DOMAIN; // ej. selva-urban-farming.myshopify.com
+const ADMIN_TOKEN = process.env.SHOPIFY_ADMIN_API_ACCESS_TOKEN; // shpat_****
+if (!ADMIN_DOMAIN) throw new Error("Missing env SHOPIFY_STORE_DOMAIN");
+if (!ADMIN_TOKEN) throw new Error("Missing env SHOPIFY_ADMIN_API_ACCESS_TOKEN");
+
+const STOREFRONT_BASE =
+  process.env.NEXT_PUBLIC_STOREFRONT_BASE_URL || `https://${ADMIN_DOMAIN}`;
+const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY || "MXN";
+
+type AdminVariant = {
+  id: number;
+  title?: string; // p.ej. "20L", "8 in", etc.
+  price: string;
+  inventory_quantity?: number;
+  option1?: string | null;
+  option2?: string | null;
+  option3?: string | null;
+  inventory_policy?: "deny" | "continue";
+};
+
+type AdminProduct = {
+  id: number;
+  title: string;
+  handle: string;
+  status?: "active" | "draft" | "archived";
+  published_at?: string | null;
+  images?: { src: string }[];
+  variants?: AdminVariant[];
+  tags?: string; // "tag1, tag2"
+  product_type?: string;
+  vendor?: string;
+};
+
+export async function GET(req: NextRequest) {
+  try {
+    // Parámetros opcionales
+    const inStockOnly = req.nextUrl.searchParams.get("inStockOnly") === "1";
+    const include = (req.nextUrl.searchParams.get("include") || "")
+      .split(",")
+      .map((s) => s.trim().toLowerCase());
+
+    // Solo activos + publicados; pedimos variantes y metadatos clave
+    const url =
+      `https://${ADMIN_DOMAIN}/admin/api/2024-07/products.json` +
+      `?limit=250&status=active&published_status=published&fields=` +
+      [
+        "id",
+        "title",
+        "handle",
+        "status",
+        "published_at",
+        "images",
+        "variants",
+        "tags",
+        "product_type",
+        "vendor",
+      ].join(",");
+
+    const res = await fetch(url, {
+      headers: {
+        "X-Shopify-Access-Token": ADMIN_TOKEN,
+        "Content-Type": "application/json",
+      },
+      cache: "no-store",
+    });
+
+    if (!res.ok) {
+      const txt = await res.text();
+      throw new Error(`Shopify Admin error ${res.status}: ${txt}`);
+    }
+
+    const data = (await res.json()) as { products: AdminProduct[] };
+
+    const out = (data.products || []).flatMap((p) => {
+      if (p.status !== "active" || !p.published_at) return [];
+
+      const variantsRaw = (p.variants || []).map((vv) => {
+        const label =
+          vv.title ||
+          [vv.option1, vv.option2, vv.option3].filter(Boolean).join(" / ") ||
+          "";
+        const qty =
+          typeof vv.inventory_quantity === "number" ? vv.inventory_quantity : 0; // ← bug arreglado
+        const policy = vv.inventory_policy || "deny";
+        const available = qty > 0 || policy === "continue";
+
+        return {
+          id: vv.id,
+          label,
+          price: vv.price ?? "",
+          qty,
+          policy,
+          available,
+        };
+      });
+
+      const variants = inStockOnly
+        ? variantsRaw.filter((v) => v.available)
+        : variantsRaw;
+
+      // Si pediste solo en stock y no hay variantes disponibles, no devolvemos el producto
+      if (inStockOnly && variants.length === 0) return [];
+
+      // Precio principal: de la primera variante (si hay) o vacío
+      const first = variants[0] || variantsRaw[0];
+
+      return [
+        {
+          id: p.id,
+          title: p.title,
+          image: p.images?.[0]?.src ?? "",
+          price: first?.price ?? "",
+          currency: CURRENCY,
+          url: `${STOREFRONT_BASE}/products/${p.handle}`,
+          tags: (p.tags || "")
+            .split(",")
+            .map((t) => t.trim())
+            .filter(Boolean),
+          product_type: p.product_type || "",
+          vendor: p.vendor || "",
+          // Sólo incluir variantes si el cliente lo pidió
+          variants: include.includes("variants")
+            ? variants.map((v) => ({
+                label: v.label,
+                price: v.price,
+                available: v.available,
+              }))
+            : undefined,
+        },
+      ];
+    });
+
+    return NextResponse.json(out);
+  } catch (err: any) {
+    console.error("[/api/products] error:", err);
+    return NextResponse.json(
+      { error: err?.message || "unknown error" },
+      { status: 500 }
+    );
+  }
+}
+
+
