@@ -51,62 +51,150 @@ export default function EmbedChat() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-white">
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-br from-green-50 to-green-100">
-        {messages.map((message, index) => (
-          <div
-            key={index}
-            className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
-          >
+    <>
+      <style jsx global>{`
+        #selva-chat-button { display: none !important; }
+        body { margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
+      `}</style>
+      
+      <div style={{ 
+        display: 'flex', 
+        flexDirection: 'column', 
+        height: '100vh', 
+        backgroundColor: 'white',
+        margin: 0,
+        padding: 0
+      }}>
+        {/* Messages */}
+        <div style={{
+          flex: 1,
+          overflowY: 'auto',
+          padding: '1rem',
+          background: 'linear-gradient(to bottom right, #f0fdf4, #dcfce7)'
+        }}>
+          {messages.map((message, index) => (
             <div
-              className={`max-w-xs px-4 py-2 rounded-lg ${
-                message.role === 'user'
-                  ? 'bg-green-600 text-white'
-                  : 'bg-white text-gray-800 shadow-md border border-green-100'
-              }`}
+              key={index}
+              style={{
+                display: 'flex',
+                justifyContent: message.role === 'user' ? 'flex-end' : 'flex-start',
+                marginBottom: '1rem'
+              }}
             >
-              <p className="text-sm whitespace-pre-wrap">{message.content}</p>
-            </div>
-          </div>
-        ))}
-        
-        {isLoading && (
-          <div className="flex justify-start">
-            <div className="bg-white text-gray-800 shadow-md px-4 py-2 rounded-lg border border-green-100">
-              <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+              <div
+                style={{
+                  maxWidth: '300px',
+                  padding: '0.75rem 1rem',
+                  borderRadius: '0.5rem',
+                  backgroundColor: message.role === 'user' ? '#16a34a' : 'white',
+                  color: message.role === 'user' ? 'white' : '#1f2937',
+                  boxShadow: message.role === 'user' ? 'none' : '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                  border: message.role === 'user' ? 'none' : '1px solid #dcfce7'
+                }}
+              >
+                <p style={{ 
+                  margin: 0, 
+                  fontSize: '0.875rem', 
+                  whiteSpace: 'pre-wrap' 
+                }}>
+                  {message.content}
+                </p>
               </div>
             </div>
-          </div>
-        )}
-      </div>
-
-      {/* Input fijo abajo */}
-      <div className="border-t bg-white p-4 shadow-lg">
-        <div className="text-xs text-gray-500 mb-2 text-center">
-          🌿 Asistente Cannabis Selva
+          ))}
+          
+          {isLoading && (
+            <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <div style={{
+                backgroundColor: 'white',
+                color: '#1f2937',
+                boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+                padding: '0.75rem 1rem',
+                borderRadius: '0.5rem',
+                border: '1px solid #dcfce7'
+              }}>
+                <div style={{ display: 'flex', gap: '0.25rem' }}>
+                  <div style={{
+                    width: '0.5rem',
+                    height: '0.5rem',
+                    backgroundColor: '#16a34a',
+                    borderRadius: '50%',
+                    animation: 'bounce 1s infinite'
+                  }}></div>
+                  <div style={{
+                    width: '0.5rem',
+                    height: '0.5rem',
+                    backgroundColor: '#16a34a',
+                    borderRadius: '50%',
+                    animation: 'bounce 1s infinite',
+                    animationDelay: '0.1s'
+                  }}></div>
+                  <div style={{
+                    width: '0.5rem',
+                    height: '0.5rem',
+                    backgroundColor: '#16a34a',
+                    borderRadius: '50%',
+                    animation: 'bounce 1s infinite',
+                    animationDelay: '0.2s'
+                  }}></div>
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-        <form onSubmit={handleSubmit} className="flex gap-2">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            placeholder="Pregunta sobre cannabis, cultivo, productos..."
-            className="flex-1 border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-green-500 text-sm"
-            disabled={isLoading}
-          />
-          <button
-            type="submit"
-            disabled={isLoading || !input.trim()}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
-          >
-            {isLoading ? '⏳' : '📤'}
-          </button>
-        </form>
+
+        {/* Input fijo abajo */}
+        <div style={{
+          borderTop: '1px solid #e5e7eb',
+          backgroundColor: 'white',
+          padding: '1rem',
+          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+        }}>
+          <div style={{
+            fontSize: '0.75rem',
+            color: '#6b7280',
+            marginBottom: '0.5rem',
+            textAlign: 'center'
+          }}>
+            🌿 Asistente Cannabis Selva
+          </div>
+          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '0.5rem' }}>
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              placeholder="Pregunta sobre cannabis, cultivo, productos..."
+              style={{
+                flex: 1,
+                border: '1px solid #d1d5db',
+                borderRadius: '0.5rem',
+                padding: '0.5rem 0.75rem',
+                fontSize: '0.875rem',
+                outline: 'none'
+              }}
+              disabled={isLoading}
+            />
+            <button
+              type="submit"
+              disabled={isLoading || !input.trim()}
+              style={{
+                backgroundColor: '#16a34a',
+                color: 'white',
+                padding: '0.5rem 1rem',
+                borderRadius: '0.5rem',
+                border: 'none',
+                cursor: isLoading || !input.trim() ? 'not-allowed' : 'pointer',
+                opacity: isLoading || !input.trim() ? 0.5 : 1,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}
+            >
+              {isLoading ? '⏳' : '📤'}
+            </button>
+          </form>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
