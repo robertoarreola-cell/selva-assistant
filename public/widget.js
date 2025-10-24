@@ -31,34 +31,15 @@
         border: 3px solid rgba(255, 255, 255, 0.2) !important;
       `;
 
-      // Crear imagen con tu logo SVG (con debugging)
-      const logoImg = document.createElement('img');
-      logoImg.src = `${CHAT_APP_URL}/chat-icon.svg`;
-      logoImg.alt = 'Selva Chat';
-      logoImg.style.cssText = `
-        width: 40px !important;
-        height: 40px !important;
-        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)) !important;
-        pointer-events: none !important;
+      // SVG inline personalizado (reemplaza con tu SVG)
+      chatButton.innerHTML = `
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="white" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
+          <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
+          <circle cx="8" cy="10" r="1"/>
+          <circle cx="12" cy="10" r="1"/>
+          <circle cx="16" cy="10" r="1"/>
+        </svg>
       `;
-      
-      // Debug: ver si carga la imagen
-      logoImg.onload = function() {
-        console.log('✅ SVG cargado correctamente:', this.src);
-      };
-      
-      // Fallback si no carga la imagen
-      logoImg.onerror = function() {
-        console.log('❌ Error cargando SVG:', this.src);
-        this.style.display = 'none';
-        chatButton.innerHTML = `
-          <div style="color: white; font-weight: bold; font-size: 10px; text-align: center; line-height: 1.2;">
-            🌿<br>SELVA
-          </div>
-        `;
-      };
-      
-      chatButton.appendChild(logoImg);
 
       // Variable para el iframe
       let chatIframe = null;
