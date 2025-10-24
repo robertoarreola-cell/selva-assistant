@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 
-// Dedicated embed page for Shopify widget integration
+// Dedicated embed page - SOLO CHAT, sin layout principal
 export default function EmbedChat() {
   const [messages, setMessages] = useState([
     {
@@ -51,7 +51,7 @@ export default function EmbedChat() {
   };
 
   return (
-    <div className="flex flex-col h-screen bg-white">
+    <div className="flex flex-col h-full bg-white">
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gradient-to-br from-green-50 to-green-100">
         {messages.map((message, index) => (
@@ -60,7 +60,7 @@ export default function EmbedChat() {
             className={`flex ${message.role === 'user' ? 'justify-end' : 'justify-start'}`}
           >
             <div
-              className={`max-w-xs lg:max-w-md px-4 py-2 rounded-lg ${
+              className={`max-w-xs px-4 py-2 rounded-lg ${
                 message.role === 'user'
                   ? 'bg-green-600 text-white'
                   : 'bg-white text-gray-800 shadow-md border border-green-100'
@@ -75,9 +75,9 @@ export default function EmbedChat() {
           <div className="flex justify-start">
             <div className="bg-white text-gray-800 shadow-md px-4 py-2 rounded-lg border border-green-100">
               <div className="flex space-x-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce"></div>
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
+                <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce"></div>
+                <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{animationDelay: '0.1s'}}></div>
+                <div className="w-2 h-2 bg-green-600 rounded-full animate-bounce" style={{animationDelay: '0.2s'}}></div>
               </div>
             </div>
           </div>
