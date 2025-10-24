@@ -4,8 +4,8 @@
   // Verificar si ya existe
   if (document.getElementById('selva-chat-button')) return;
   
-  // URL de tu app deployada en Vercel
-  const CHAT_APP_URL = 'https://selva-assistant-git-main-robertos-projects-eee4cbcb.vercel.app/widget';
+  // URL de tu app deployada en Vercel - usar página principal
+  const CHAT_APP_URL = 'https://selva-assistant-git-main-robertos-projects-eee4cbcb.vercel.app';
   
   // Función para crear el widget de forma segura
   function createWidget() {
@@ -31,7 +31,7 @@
         border: 3px solid rgba(255, 255, 255, 0.2) !important;
       `;
 
-      // Crear imagen con tu logo SVG real - URL corregida
+      // Crear imagen con tu logo SVG real
       const logoImg = document.createElement('img');
       logoImg.src = 'https://selva-assistant-git-main-robertos-projects-eee4cbcb.vercel.app/chat-icon.svg';
       logoImg.alt = 'Selva Chat';
@@ -53,13 +53,13 @@
       
       chatButton.appendChild(logoImg);
 
-      // Toggle del chat - ABRIR EN NUEVA VENTANA
+      // Toggle del chat - ABRIR PÁGINA PRINCIPAL EN VENTANA PEQUEÑA
       chatButton.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         
-        // Abrir en nueva ventana/tab en lugar de iframe
-        window.open(CHAT_APP_URL, 'selva-chat', 'width=400,height=700,scrollbars=yes,resizable=yes');
+        // Abrir página principal en ventana compacta
+        window.open(CHAT_APP_URL, 'selva-chat', 'width=400,height=700,scrollbars=yes,resizable=yes,toolbar=no,menubar=no,location=no');
       });
 
       // Efectos hover
