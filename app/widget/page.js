@@ -1,7 +1,6 @@
 'use client';
 
 import { useState } from 'react';
-import { Send } from 'lucide-react';
 
 // Widget chat component for Shopify integration
 export default function WidgetChat() {
@@ -106,9 +105,9 @@ export default function WidgetChat() {
           <button
             type="submit"
             disabled={isLoading || !input.trim()}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
           >
-            <Send size={16} />
+            {isLoading ? '⏳' : '📤'}
           </button>
         </form>
       </div>
