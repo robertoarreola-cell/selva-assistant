@@ -31,51 +31,38 @@
         border: 3px solid rgba(255, 255, 255, 0.2) !important;
       `;
 
-      // SVG inline personalizado (reemplaza con tu SVG)
-      chatButton.innerHTML = `
-        <svg width="40" height="40" viewBox="0 0 24 24" fill="white" style="filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2));">
-          <path d="M20 2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h4l4 4 4-4h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2z"/>
-          <circle cx="8" cy="10" r="1"/>
-          <circle cx="12" cy="10" r="1"/>
-          <circle cx="16" cy="10" r="1"/>
-        </svg>
+      // Crear imagen con tu logo SVG real
+      const logoImg = document.createElement('img');
+      logoImg.src = `${CHAT_APP_URL}/chat-icon.svg`;
+      logoImg.alt = 'Selva Chat';
+      logoImg.style.cssText = `
+        width: 40px !important;
+        height: 40px !important;
+        filter: drop-shadow(0 2px 4px rgba(0,0,0,0.2)) !important;
+        pointer-events: none !important;
       `;
+      
+      // Fallback si no carga la imagen
+      logoImg.onerror = function() {
+        chatButton.innerHTML = `
+          <div style="color: white; font-weight: bold; font-size: 10px; text-align: center; line-height: 1.2;">
+            🌿<br>SELVA
+          </div>
+        `;
+      };
+      
+      chatButton.appendChild(logoImg);
 
       // Variable para el iframe
       let chatIframe = null;
 
-      // Toggle del chat
+      // Toggle del chat - ABRIR EN NUEVA VENTANA
       chatButton.addEventListener('click', function(e) {
         e.preventDefault();
         e.stopPropagation();
         
-        if (!chatIframe) {
-          // Crear iframe solo cuando se necesite
-          chatIframe = document.createElement('iframe');
-          chatIframe.id = 'selva-chat-iframe';
-          chatIframe.src = CHAT_APP_URL;
-          chatIframe.style.cssText = `
-            position: fixed !important;
-            bottom: 100px !important;
-            right: 20px !important;
-            width: 380px !important;
-            height: 650px !important;
-            border: none !important;
-            border-radius: 12px !important;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.35) !important;
-            z-index: 1000000 !important;
-            display: block !important;
-            background: white !important;
-          `;
-          document.body.appendChild(chatIframe);
-        } else {
-          // Toggle visibility
-          if (chatIframe.style.display === 'none') {
-            chatIframe.style.display = 'block';
-          } else {
-            chatIframe.style.display = 'none';
-          }
-        }
+        // Abrir en nueva ventana/tab en lugar de iframe
+        window.open(CHAT_APP_URL, 'selva-chat', 'width=400,height=700,scrollbars=yes,resizable=yes');
       });
 
       // Efectos hover
