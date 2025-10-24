@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Send } from 'lucide-react';
 
+// Widget chat component for Shopify integration
 export default function WidgetChat() {
   const [messages, setMessages] = useState([
     {
