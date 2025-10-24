@@ -23,7 +23,8 @@ export default function EmbedChat() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/api/chat', {
+      const baseURL = window.location.origin;
+      const response = await fetch(`${baseURL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
