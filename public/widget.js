@@ -4,9 +4,10 @@
   // Verificar si ya existe
   if (document.getElementById('selva-chat-button')) return;
   
+  // ...existing code...
   // URL de tu app deployada en Vercel
-  const CHAT_APP_URL = 'https://selva-assistant-git-main-robertos-projects-eee4cbcb.vercel.app';
-  
+  const CHAT_APP_URL = 'https://selva-assistant-git-main-robertos-projects-eee4cbcb.vercel.app/widget';
+// ...existing code...
   // Función para crear el widget de forma segura
   function createWidget() {
     try {
