@@ -27,19 +27,20 @@ export default function EmbedChat() {
       const response = await fetch(`${baseURL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          messages: [...messages, userMessage]
-        })
+        body: JSON.stringify({ 
+  message: userMessage.content, 
+  conversation: messages 
+})
       });
 
       const data = await response.json();
       
-      if (data.content) {
-        setMessages(prev => [...prev, {
-          role: 'assistant',
-          content: data.content
-        }]);
-      }
+      if (data.answer) {
+  setMessages(prev => [...prev, {
+    role: 'assistant',
+    content: data.answer
+  }]);
+}
     } catch (error) {
       console.error('Error:', error);
       setMessages(prev => [...prev, {
