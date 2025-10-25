@@ -56,23 +56,49 @@ export default function EmbedChat() {
     <>
       <style jsx global>{`
         #selva-chat-button { display: none !important; }
-        body { margin: 0; padding: 0; font-family: -apple-system, sans-serif; }
+        body { 
+          margin: 0; 
+          padding: 0; 
+          font-family: -apple-system, sans-serif;
+          overflow: hidden;
+          height: 100vh;
+          height: 100dvh;
+        }
+        
+        @keyframes bounce {
+          0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+          40% { transform: translateY(-0.25rem); }
+          60% { transform: translateY(-0.125rem); }
+        }
+        
+        @media (max-width: 480px) {
+          .chat-container {
+            height: 100vh !important;
+            height: 100dvh !important;
+          }
+        }
       `}</style>
       
-      <div style={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        height: '100vh', 
-        backgroundColor: 'white',
-        margin: 0,
-        padding: 0
-      }}>
+      <div 
+        className="chat-container"
+        style={{ 
+          display: 'flex', 
+          flexDirection: 'column', 
+          height: '100vh',
+          height: '100dvh',
+          backgroundColor: 'white',
+          margin: 0,
+          padding: 0,
+          overflow: 'hidden'
+        }}>
+        
         {/* Messages */}
         <div style={{
           flex: 1,
           overflowY: 'auto',
-          padding: '1rem',
-          background: 'linear-gradient(to bottom right, #f0fdf4, #dcfce7)'
+          padding: '1rem 0.5rem',
+          background: 'linear-gradient(to bottom right, #f0fdf4, #dcfce7)',
+          paddingBottom: '0.5rem'
         }}>
           {messages.map((message, index) => (
             <div
@@ -150,7 +176,8 @@ export default function EmbedChat() {
           borderTop: '1px solid #e5e7eb',
           backgroundColor: 'white',
           padding: '1rem',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1)'
+          boxShadow: '0 -2px 10px rgba(0, 0, 0, 0.1)',
+          flexShrink: 0
         }}>
           <div style={{
             fontSize: '0.75rem',
@@ -160,19 +187,24 @@ export default function EmbedChat() {
           }}>
             🌿 Asistente Cannabis Selva
           </div>
-          <form onSubmit={handleSubmit} style={{ display: 'flex', gap: '0.5rem' }}>
+          <form onSubmit={handleSubmit} style={{ 
+            display: 'flex', 
+            gap: '0.5rem',
+            alignItems: 'stretch'
+          }}>
             <input
               type="text"
               value={input}
               onChange={(e) => setInput(e.target.value)}
-              placeholder="Pregunta sobre cannabis, cultivo, productos..."
+              placeholder="Pregunta sobre cannabis..."
               style={{
                 flex: 1,
                 border: '1px solid #d1d5db',
                 borderRadius: '0.5rem',
-                padding: '0.5rem 0.75rem',
-                fontSize: '0.875rem',
-                outline: 'none'
+                padding: '0.75rem',
+                fontSize: '16px',
+                outline: 'none',
+                minHeight: '44px'
               }}
               disabled={isLoading}
             />
@@ -182,14 +214,16 @@ export default function EmbedChat() {
               style={{
                 backgroundColor: '#16a34a',
                 color: 'white',
-                padding: '0.5rem 1rem',
+                padding: '0.75rem 1rem',
                 borderRadius: '0.5rem',
                 border: 'none',
                 cursor: isLoading || !input.trim() ? 'not-allowed' : 'pointer',
                 opacity: isLoading || !input.trim() ? 0.5 : 1,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                minWidth: '44px',
+                minHeight: '44px'
               }}
             >
               {isLoading ? '⏳' : '📤'}
